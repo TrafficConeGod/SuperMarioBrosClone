@@ -1,1 +1,2 @@
 Actor,,Int XPosition,Int YPosition
+MockupActor,Actor,Int Custom,

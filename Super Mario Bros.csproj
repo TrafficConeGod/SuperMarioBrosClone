@@ -58,8 +58,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Classes\DataStream.cs" />
+    <Compile Include="Assets\Classes\InvalidStateException.cs" />
     <Compile Include="Assets\Classes\Nodes\Player.cs" />
     <Compile Include="Assets\Classes\Nodes\Stage.cs" />
+    <Compile Include="Assets\Classes\Nodes\Actor.cs" />
+    <Compile Include="Assets\Classes\Attributes\ActorAttribute.cs" />
+    <Compile Include="Assets\Scenes\Actors\MockupActor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
