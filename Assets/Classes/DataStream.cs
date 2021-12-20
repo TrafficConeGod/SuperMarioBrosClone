@@ -32,7 +32,8 @@ public class DataStream {
             case TypeCode.Int16: return (object)ReadShort();
             case TypeCode.UInt16: return (object)ReadUShort();
             case TypeCode.Boolean: return (object)ReadBoolean();
-            case TypeCode.Object: return (object)ReadObject(type);
+            case TypeCode.Single: return (object)ReadFloat();
+            case TypeCode.Object: return ReadObject(type);
         }
         throw new InvalidStateException("Unsupported type " + type.Name);
     }

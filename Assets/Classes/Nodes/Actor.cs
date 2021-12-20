@@ -11,13 +11,13 @@ public class Actor : Node2D {
 	[EditableProperty]
 	public Vector2 EditablePosition { get => Position; set => Position = value; }
 
-	// /// <Summary> Editable scale </Summary>
-	// [EditableProperty]
-	// public Vector2 EditableScale { get => Scale; set => Scale = value.Value; }
+	/// <Summary> Editable scale </Summary>
+	[EditableProperty]
+	public Vector2 EditableScale { get => Scale; set => Scale = value; }
 
-	// /// <Summary> Editable rotation </Summary>
-	// [EditableProperty]
-	// public float EditableRotation { get => RotationDegrees; set => RotationDegrees = value.Value; }
+	/// <Summary> Editable rotation </Summary>
+	[EditableProperty]
+	public float EditableRotation { get => RotationDegrees; set => RotationDegrees = value; }
 
     public void Construct(Stage stage) {
         Stage = stage;
