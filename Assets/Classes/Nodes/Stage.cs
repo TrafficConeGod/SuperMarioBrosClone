@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 /// <Summary> This node has a lifetime for the entire existence of the current loaded stage </Summary>
 public class Stage : Node {
-    /// <Summary> A list of all actor scene caches </Summary>
-	private static Dictionary<ushort, PackedScene> actorSceneCache = new Dictionary<ushort, PackedScene>();
+    /// <Summary> A dictionary of all actor types </Summary>
+	private static Dictionary<ushort, ActorType> actorTypeCache = new Dictionary<ushort, ActorType>();
 
     /// <Note> stream shall not be used after this call </Note>
     public void Construct(DataStream stream) {
@@ -17,27 +17,26 @@ public class Stage : Node {
     }
 
     /// <Summary> Initializes the actor scene cache </Summary>
-    private void InitializeActorSceneCache() {
+    private void InitializeActorTypeCache() {
 		Assembly assembly = typeof(Stage).Assembly;
 		// loop through types on the assembly
 		foreach (Type type in assembly.GetTypes()) {
-			// check if class has ActorAttribute attribute
-			ActorAttribute actorAttribute = type.GetCustomAttribute<ActorAttribute>();
-			// cache the scene if it has the requested id
-			if (actorAttribute != null && actorAttribute.Scene != "") {
-				actorSceneCache[actorAttribute.Id] = (PackedScene)ResourceLoader.Load(actorAttribute.Scene);
-			}
+			if (ActorType.IsActor(type)) {
+                var actorType = new ActorType(type);
+                // get the actor type
+                actorTypeCache[actorType.Id] = actorType;
+            }
 		}
 	}
 
-	/// <Summary> Gets the actor scene necessary to load the actor </Summary>
-	private PackedScene GetActorSceneWithId(ushort id) {
-		// get the scene if the actorSceneCache does not have the type
-		if (actorSceneCache.Count == 0) {
-			InitializeActorSceneCache();
+	/// <Summary> Gets the actor type from id </Summary>
+	private ActorType GetActorTypeFromId(ushort id) {
+		// get the scene if the actorTypeCache does not have the type
+		if (actorTypeCache.Count == 0) {
+			InitializeActorTypeCache();
 		}
-		if (actorSceneCache.ContainsKey(id)) {
-			return actorSceneCache[id];
+		if (actorTypeCache.ContainsKey(id)) {
+			return actorTypeCache[id];
 		}
 		throw new InvalidStateException("No actor found with id " + id);
 	}
@@ -45,9 +44,8 @@ public class Stage : Node {
     /// <Summary> Constructs an actor from the data stream </Summary>
     private Actor ConstructActorFromStream(DataStream stream) {
         var id = stream.ReadUShort();
-        GD.Print(id);
-        var scene = GetActorSceneWithId(id);
-        var actor = (Actor)scene.Instance();
+        var actorType = GetActorTypeFromId(id);
+        var actor = (Actor)actorType.Scene.Instance();
         actor.Construct(this);
         AddChild(actor);
         return actor;

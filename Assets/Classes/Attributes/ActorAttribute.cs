@@ -1,5 +1,6 @@
 using System;
 
+/// <Summary> Attribute that specifies an actor and its properties </Summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class ActorAttribute : Attribute {
 	/// <Summary> The id of the actor </Summary>
