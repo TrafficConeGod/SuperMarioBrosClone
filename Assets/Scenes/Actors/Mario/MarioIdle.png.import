@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Icon.png-dfff7b6b9b6b5b5b14a95c0d323a753f.stex"
+path="res://.import/MarioIdle.png-47b5129c76ff7f965e517bad497abd43.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Icon.png"
-dest_files=[ "res://.import/Icon.png-dfff7b6b9b6b5b5b14a95c0d323a753f.stex" ]
+source_file="res://Assets/Scenes/Actors/Mario/MarioIdle.png"
+dest_files=[ "res://.import/MarioIdle.png-47b5129c76ff7f965e517bad497abd43.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

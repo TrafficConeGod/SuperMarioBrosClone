@@ -17,7 +17,6 @@ _global_script_class_icons={
 
 config/name="Super Mario Bros"
 run/main_scene="res://Assets/Scenes/Player.tscn"
-config/icon="res://Assets/Textures/Icon.png"
 
 [rendering]
 

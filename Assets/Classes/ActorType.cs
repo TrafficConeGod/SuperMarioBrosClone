@@ -11,7 +11,7 @@ public class ActorType {
     public PackedScene Scene { get; set; }
 
     /// <Summary> A list of all editable properties of the actor type </Summary>
-    public List<PropertyInfo> EditableProperties { get; set; }
+    public List<PropertyInfo> EditableProperties { get; set; } = new List<PropertyInfo>();
 
     private void AddEditablePropertiesForType(Type type) {
         // Add base type editable properties if the type has one
@@ -34,7 +34,6 @@ public class ActorType {
         Id = attribute.Id;
         Scene = (PackedScene)ResourceLoader.Load(attribute.Scene);
 
-        EditableProperties = new List<PropertyInfo>();
         AddEditablePropertiesForType(type);
     }
 

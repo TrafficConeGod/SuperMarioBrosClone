@@ -53,8 +53,4 @@ public class Stage : Node {
         AddChild(actor);
         return actor;
     }
-
-    public override void _Ready() {
-        
-    }
 }
