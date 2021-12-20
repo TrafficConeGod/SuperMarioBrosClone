@@ -12,7 +12,6 @@ public class Stage : Node {
     public void Construct(DataStream stream) {
         while (!stream.Empty) {
             ConstructActorFromStream(stream);
-            break; // temporary
         }
     }
 
@@ -46,6 +45,10 @@ public class Stage : Node {
         var id = stream.ReadUShort();
         var actorType = GetActorTypeFromId(id);
         var actor = (Actor)actorType.Scene.Instance();
+        foreach (var property in actorType.EditableProperties) {
+            var value = stream.ReadVariant(property.PropertyType);
+            property.SetValue(actor, value);
+        }
         actor.Construct(this);
         AddChild(actor);
         return actor;

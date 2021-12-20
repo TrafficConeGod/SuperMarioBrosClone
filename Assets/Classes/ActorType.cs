@@ -21,7 +21,7 @@ public class ActorType {
 
         // Get all properties of the actor type
         foreach (PropertyInfo info in type.GetProperties()) {
-            if (info.GetCustomAttribute<EditablePropertyAttribute>() != null) {
+            if (info.DeclaringType == type && info.GetCustomAttribute<EditablePropertyAttribute>() != null) {
                 // Add the editable property to the list
                 EditableProperties.Add(info);
             }

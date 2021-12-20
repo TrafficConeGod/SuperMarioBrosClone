@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection;
 
 /// <Summary> This object contains a stream of binary data from a source </Summary>
 public class DataStream {
@@ -20,6 +21,18 @@ public class DataStream {
         data.RemoveRange(0, checked((int)count));
         //
         return bytes;
+    }
+
+    /// <Summary> Reads a variant type from the stream </Summary>
+    public object ReadVariant(Type type) {
+        switch (Type.GetTypeCode(type)) {
+            case TypeCode.Int32: return (object)ReadInt();
+            case TypeCode.UInt32: return (object)ReadUInt();
+            case TypeCode.Int16: return (object)ReadShort();
+            case TypeCode.UInt16: return (object)ReadUShort();
+            case TypeCode.Boolean: return (object)ReadBoolean();
+        }
+        throw new InvalidStateException("Unsupported type " + type.Name);
     }
 
     /// <Summary> Reads an int32 from the stream </Summary>
