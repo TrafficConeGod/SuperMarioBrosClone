@@ -2,13 +2,14 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
+using Godot;
 
 /// <Summary> This object contains a stream of binary data from a source </Summary>
 public class DataStream {
     private List<byte> data;
 
     public DataStream(string path) {
-        data = new List<byte>(File.ReadAllBytes(path));
+        data = new List<byte>(System.IO.File.ReadAllBytes(path));
     }
 
     /// <Summary> If the stream is empty </Summary>
@@ -31,6 +32,14 @@ public class DataStream {
             case TypeCode.Int16: return (object)ReadShort();
             case TypeCode.UInt16: return (object)ReadUShort();
             case TypeCode.Boolean: return (object)ReadBoolean();
+            case TypeCode.Object: return (object)ReadObject(type);
+        }
+        throw new InvalidStateException("Unsupported type " + type.Name);
+    }
+
+    private object ReadObject(Type type) {
+        if (type == typeof(Vector2)) {
+            return (object)ReadVector2();
         }
         throw new InvalidStateException("Unsupported type " + type.Name);
     }
@@ -57,6 +66,16 @@ public class DataStream {
 
     /// <Summary> Reads a boolean from the stream </Summary>
     public bool ReadBoolean() {
-        return true;
+        return BitConverter.ToBoolean(ReadBytes(1), 0);
+    }
+
+    /// <Summary> Reads a float from the stream </Summary>
+    public float ReadFloat() {
+        return BitConverter.ToSingle(ReadBytes(4), 0);
+    }
+
+    /// <Summary> Reads a Vector2 from the stream </Summary>
+    public Vector2 ReadVector2() {
+        return new Vector2(ReadFloat(), ReadFloat());
     }
 }

@@ -1,2 +1,2 @@
-Actor,,Int XPosition,Int YPosition
-MockupActor,Actor,Int Custom,
+Actor,,Vector2Float Position
+MockupActor,Actor,Int Custom

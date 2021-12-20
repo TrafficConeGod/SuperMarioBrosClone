@@ -9,8 +9,7 @@ public class MockupActor : Actor {
 
     public override void _Ready() {
         GD.Print("Hello world!");
-        GD.Print(XPosition);
-        GD.Print(YPosition);
+        GD.Print(EditablePosition);
         GD.Print(Custom);
     }
 }
