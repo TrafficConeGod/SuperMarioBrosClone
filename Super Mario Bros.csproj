@@ -66,6 +66,7 @@
     <Compile Include="Assets\Classes\Attributes\ActorAttribute.cs" />
     <Compile Include="Assets\Classes\Attributes\EditablePropertyAttribute.cs" />
     <Compile Include="Assets\Scenes\Actors\Mario\Mario.cs" />
+    <Compile Include="Assets\Scenes\Actors\Tilemap\Tilemap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
