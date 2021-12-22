@@ -24,6 +24,18 @@ public class DataStream {
         return bytes;
     }
 
+    /// <Summary> Reads bytes from the stream until a null byte </Summary>
+    public byte[] ReadBytesUntilNull() {
+        // Get the amount of bytes until a null byte
+        uint count = 0;
+        for (; count < data.Count; count++) {
+            if (data[checked((int)count)] == 0) {
+                break;
+            }
+        }
+        return ReadBytes(count + 1);
+    }
+
     /// <Summary> Reads a variant type from the stream </Summary>
     public object ReadVariant(Type type) {
         switch (Type.GetTypeCode(type)) {
@@ -33,6 +45,7 @@ public class DataStream {
             case TypeCode.UInt16: return (object)ReadUShort();
             case TypeCode.Boolean: return (object)ReadBoolean();
             case TypeCode.Single: return (object)ReadFloat();
+            case TypeCode.String: return (object)ReadString();
             case TypeCode.Object: return ReadObject(type);
         }
         throw new InvalidStateException("Unsupported type " + type.Name);
@@ -45,37 +58,37 @@ public class DataStream {
         throw new InvalidStateException("Unsupported type " + type.Name);
     }
 
-    /// <Summary> Reads an int32 from the stream </Summary>
     public int ReadInt() {
         return BitConverter.ToInt32(ReadBytes(4), 0);
     }
 
-    /// <Summary> Reads a uint32 from the stream </Summary>
     public uint ReadUInt() {
         return BitConverter.ToUInt32(ReadBytes(4), 0);
     }
 
-    /// <Summary> Reads an int16 from the stream </Summary>
     public short ReadShort() {
         return BitConverter.ToInt16(ReadBytes(2), 0);
     }
 
-    /// <Summary> Reads a uint16 from the stream </Summary>
     public ushort ReadUShort() {
         return BitConverter.ToUInt16(ReadBytes(2), 0);
     }
 
-    /// <Summary> Reads a boolean from the stream </Summary>
     public bool ReadBoolean() {
         return BitConverter.ToBoolean(ReadBytes(1), 0);
     }
 
-    /// <Summary> Reads a float from the stream </Summary>
     public float ReadFloat() {
         return BitConverter.ToSingle(ReadBytes(4), 0);
     }
 
-    /// <Summary> Reads a Vector2 from the stream </Summary>
+    public string ReadString() {
+        var bytes = ReadBytesUntilNull();
+        MemoryStream stream = new MemoryStream(bytes);
+        StreamReader streamReader = new StreamReader(stream);
+        return streamReader.ReadToEnd();
+    }
+
     public Vector2 ReadVector2() {
         return new Vector2(ReadFloat(), ReadFloat());
     }
