@@ -5,52 +5,23 @@ using System.Collections.Generic;
 
 /// <Summary> This node has a lifetime for the entire existence of the current loaded stage </Summary>
 public class Stage : Node {
-    /// <Summary> A dictionary of all actor types </Summary>
-	private static Dictionary<ushort, ActorType> actorTypeCache = new Dictionary<ushort, ActorType>();
+    /// <Summary> A cache of packed scenes </Summary>
+    private static Dictionary<string, PackedScene> packedSceneCache = new Dictionary<string, PackedScene>();
 
-    /// <Note> stream shall not be used after this call </Note>
-    public void Construct(DataStream stream) {
-        while (!stream.Empty) {
-            ConstructActorFromStream(stream);
-        }
-    }
-
-    /// <Summary> Initializes the actor scene cache </Summary>
-    private void InitializeActorTypeCache() {
-		Assembly assembly = typeof(Stage).Assembly;
-		// loop through types on the assembly
-		foreach (Type type in assembly.GetTypes()) {
-			if (ActorType.IsActor(type)) {
-                var actorType = new ActorType(type);
-                // get the actor type
-                actorTypeCache[actorType.Id] = actorType;
+    public static Stage Construct(string path) {
+        if (!packedSceneCache.ContainsKey(path)) {
+            var packedScene = (PackedScene)ResourceLoader.Load(path);
+            if (packedScene == null) {
+                throw new InvalidStateException("Could not load stage at path: " + path);
             }
-		}
-	}
-
-	/// <Summary> Gets the actor type from id </Summary>
-	private ActorType GetActorTypeFromId(ushort id) {
-		// get the scene if the actorTypeCache does not have the type
-		if (actorTypeCache.Count == 0) {
-			InitializeActorTypeCache();
-		}
-		if (actorTypeCache.ContainsKey(id)) {
-			return actorTypeCache[id];
-		}
-		throw new InvalidStateException("No actor found with id " + id);
-	}
-
-    /// <Summary> Constructs an actor from the data stream </Summary>
-    private Actor ConstructActorFromStream(DataStream stream) {
-        var id = stream.ReadUShort();
-        var actorType = GetActorTypeFromId(id);
-        var actor = (Actor)actorType.Scene.Instance();
-        foreach (var property in actorType.EditableProperties) {
-            var value = stream.ReadVariant(property.PropertyType);
-            property.SetValue(actor, value);
+            packedSceneCache.Add(path, packedScene);
         }
-        actor.Construct(this);
-        AddChild(actor);
-        return actor;
+        var stage = (Stage)packedSceneCache[path].Instance();
+        foreach (var child in stage.GetChildren()) {
+            if (child.GetType().IsAssignableFrom(typeof(IActor))) {
+                ((IActor)child).Stage = stage;
+            }
+        }
+        return stage;
     }
 }

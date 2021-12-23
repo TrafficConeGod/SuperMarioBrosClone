@@ -1,8 +1,9 @@
 using Godot;
 using System;
 
-[Actor(Id = 2, Scene = "res://Assets/Scenes/Actors/Mario/Mario.tscn")]
-public class Mario : Actor {
+public class Mario : Node2D, IActor {
+    public Stage Stage { get; set; }
+
     public override void _Ready() {
     }
 }

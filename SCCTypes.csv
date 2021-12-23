@@ -1,3 +1,0 @@
-Actor;;Vector2Float Position 0, 0;Vector2Float Scale 1, 1;Float Rotation 0
-Mario;Actor;;;
-Tilemap;Actor;String Path;;

@@ -5,8 +5,8 @@ using System;
 public class Player : Node2D {
     public override void _Ready() {
         OS.WindowSize = new Vector2(768, 720); // hacky way to set the window size
-        var stage = new Stage();
-        stage.Construct(new DataStream("Assets/Stages/MainStage.stg"));
+
+        var stage = Stage.Construct("res://Assets/Scenes/Stages/Stage1.tscn");
         AddChild(stage);
     }
 }
