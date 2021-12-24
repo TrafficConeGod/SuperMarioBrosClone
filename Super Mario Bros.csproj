@@ -58,10 +58,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Interfaces\IActor.cs" />
+    <Compile Include="Assets\Interfaces\IState.cs" />
     <Compile Include="Assets\Classes\InvalidStateException.cs" />
+    <Compile Include="Assets\Classes\StateMachine.cs" />
     <Compile Include="Assets\Classes\Nodes\Player.cs" />
     <Compile Include="Assets\Classes\Nodes\Stage.cs" />
     <Compile Include="Assets\Scenes\Actors\Mario\Mario.cs" />
+    <Compile Include="Assets\Scenes\Actors\Mario\MarioState.cs" />
+    <Compile Include="Assets\Scenes\Actors\Mario\States\MarioIdleState.cs" />
+    <Compile Include="Assets\Scenes\Actors\Mario\States\MarioWalkState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
