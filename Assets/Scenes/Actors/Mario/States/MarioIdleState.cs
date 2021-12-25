@@ -9,7 +9,17 @@ public class MarioIdleState : MarioState {
     }
 
     public override void Update() {
-        Mario.MovementUpdate(0, Mario.GroundIdleDampening);
+        if (Mario.MovementStateChangeUpdate()) { return; }
+        if (Input.IsActionPressed("move_left") || Input.IsActionPressed("move_right")) {
+            if (Input.IsActionPressed("run")) {
+                Mario.MovementState = new MarioRunState(Mario);
+            } else {
+                Mario.MovementState = new MarioWalkState(Mario);
+            }
+            return;
+        }
+
+        Mario.HorizontalMovementUpdate(0, Mario.GroundIdleDampening);
     }
 
     public override void End() {

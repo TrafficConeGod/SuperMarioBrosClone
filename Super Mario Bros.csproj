@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scenes\Actors\Mario\MarioState.cs" />
     <Compile Include="Assets\Scenes\Actors\Mario\States\MarioIdleState.cs" />
     <Compile Include="Assets\Scenes\Actors\Mario\States\MarioWalkState.cs" />
+    <Compile Include="Assets\Scenes\Actors\Mario\States\MarioRunState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

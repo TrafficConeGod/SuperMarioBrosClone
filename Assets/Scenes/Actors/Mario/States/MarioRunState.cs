@@ -1,11 +1,11 @@
 using System;
 using Godot;
 
-public class MarioWalkState : MarioState {
-    public MarioWalkState(Mario mario) : base(mario) {}
+public class MarioRunState : MarioState {
+    public MarioRunState(Mario mario) : base(mario) {}
 
     public override void Begin() {
-        Mario.Sprite.Play("walk");
+        Mario.Sprite.Play("run");
     }
 
     public override void Update() {
@@ -13,12 +13,12 @@ public class MarioWalkState : MarioState {
         if (!Input.IsActionPressed("move_left") && !Input.IsActionPressed("move_right")) {
             Mario.MovementState = new MarioIdleState(Mario);
             return;
-        } else if (Input.IsActionPressed("run")) {
-            Mario.MovementState = new MarioRunState(Mario);
+        } else if (!Input.IsActionPressed("run")) {
+            Mario.MovementState = new MarioWalkState(Mario);
             return;
         }
 
-        Mario.HorizontalMovementUpdate(Mario.GroundWalkAcceleration, Mario.GroundWalkDampening);
+        Mario.HorizontalMovementUpdate(Mario.GroundRunAcceleration, Mario.GroundRunDampening);
     }
 
     public override void End() {
