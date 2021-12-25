@@ -7,7 +7,7 @@ public abstract class MarioState : IState {
         Mario = mario;
     }
 
-    public virtual void Begin(StateMachine stateMachine) {}
-    public virtual void Update(StateMachine stateMachine) {}
-    public virtual void End(StateMachine stateMachine) {}
+    public virtual void Begin() {}
+    public virtual void Update() {}
+    public virtual void End() {}
 }

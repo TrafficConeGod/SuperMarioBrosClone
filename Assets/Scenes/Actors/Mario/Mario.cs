@@ -4,59 +4,74 @@ using System;
 public class Mario : Node2D, IActor {
     public Stage Stage { get; set; }
 
-    /// <Summary> The state machine of mario </Summary>
-    private StateMachine stateMachine = new StateMachine();
+    /// <Summary> The movement state machine </Summary>
+    public StateMachine MovementStateMachine { get; set; } = new StateMachine();
 
-    /// <Summary> The current velocity of mario </Summary>
+    /// <Summary> The animation sprite </Summary>
+    public AnimatedSprite Sprite { get; set; }
+
+    /// <Summary> The current velocity </Summary>
     public Vector2 Velocity { get; set; } = new Vector2(0, 0);
 
-    /// <Summary> The current acceleration of mario </Summary>
-    public Vector2 Acceleration { get; set; } = new Vector2(0, 0);
+    private int _facingDirection = 1;
 
-    /// <Summary> The current facing direction of mario </Summary>
-    public int FacingDirection { get; private set; } = 1;
+    /// <Summary> The current facing direction </Summary>
+    public int FacingDirection { get { return _facingDirection; } private set {
+        _facingDirection = value;
+        Sprite.FlipH = _facingDirection == -1;
+    } }
 
-    /// <Summary> The current moving direction of mario </Summary>
+    /// <Summary> The current moving direction </Summary>
     public int MoveDirection { get; private set; } = 0;
 
     // Editor properties
 
-    /// <Summary> The walking acceleration of mario </Summary>
-    [Export] public float WalkAcceleration { get; set; } = 50;
+    /// <Summary> The path of the animation sprite </Summary>
+    [Export] public NodePath SpritePath { get; set; }
 
-    /// <Summary> The walking max speed of mario </Summary>
-    [Export] public float WalkMaxSpeed { get; set; } = 50;
+    /// <Summary> The factor that the delta gets multiplied by </Summary>
+    [Export] public float SpeedFactor { get; set; } = 10f;
+
+    [Export(PropertyHint.Range, "0,1")] public float GroundIdleDampening { get; set; } = 0.5f;
+
+    [Export] public float GroundWalkAcceleration { get; set; } = 10f;
+    [Export(PropertyHint.Range, "0,1")] public float GroundWalkDampening { get; set; } = 0.5f;
+
+    // Private variables
+
+    private float delta;
 
     public override void _Ready() {
-        stateMachine.PushState(new MarioIdleState(this));
+        Sprite = (AnimatedSprite)GetNode(SpritePath);
+        MovementStateMachine.PushState(new MarioIdleState(this));
     }
 
-    public override void _Process(float delta) {
-        stateMachine.Update();
+    public override void _Process(float currentDelta) {
+        delta = currentDelta;
+        MovementStateMachine.Update();
 
         // apply physics
-        Velocity += Acceleration * delta;
-        Acceleration = new Vector2(0, 0);
         Position += Velocity * delta;
     }
 
-    /// <Summary> Handles movement logic for mario </Summary>
-    public void MovementUpdate() {
+    /// <Summary> Handles movement logic </Summary>
+    public void MovementUpdate(float acceleration, float dampening) {
         if (Input.IsActionPressed("move_right") || Input.IsActionPressed("move_left")) {
             FacingDirection = Input.IsActionPressed("move_right") ? 1 : -1;
             MoveDirection = FacingDirection;
-            if (stateMachine.CurrentState is MarioIdleState) {
-                stateMachine.PushState(new MarioWalkState(this));
+            if (MovementStateMachine.CurrentState is MarioIdleState) {
+                MovementStateMachine.PushState(new MarioWalkState(this));
             }
         } else {
             MoveDirection = 0;
-            if (stateMachine.CurrentState is MarioWalkState) {
-                stateMachine.PopState();
+            if (MovementStateMachine.CurrentState is MarioWalkState) {
+                MovementStateMachine.PopState();
             }
         }
 
-        if (Math.Abs(Velocity.x) < WalkMaxSpeed) {
-            Acceleration += new Vector2(MoveDirection * WalkAcceleration, 0);
-        }
+        float horizontalVelocity = Velocity.x;
+        horizontalVelocity += MoveDirection * acceleration;
+        horizontalVelocity *= Mathf.Pow(1f - dampening, delta * SpeedFactor);
+        Velocity = new Vector2(horizontalVelocity, Velocity.y);
     }
 }

@@ -18,26 +18,26 @@ public class StateMachine {
     /// <Summary> Pushes a state to the state stack </Summary>
     public void PushState(IState state) {
         if (CurrentState != null) {
-            CurrentState.End(this);
+            CurrentState.End();
         }
         stateStack.Push(state);
-        state.Begin(this);
+        state.Begin();
     }
 
     /// <Summary> Pops the topmost state from the state stack </Summary>
     public void PopState() {
         if (CurrentState != null) {
-            CurrentState.End(this);
+            CurrentState.End();
             stateStack.Pop();
 
             if (CurrentState != null) {
-                CurrentState.Begin(this);
+                CurrentState.Begin();
             }
         }
     }
 
     /// <Summary> Updates the current state </Summary>
     public void Update() {
-        CurrentState.Update(this);
+        CurrentState.Update();
     }
 }
