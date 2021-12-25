@@ -9,8 +9,9 @@ public class MarioIdleState : MarioState {
     }
 
     public override void Update() {
+        Mario.FacingDirectionUpdate();
         if (Mario.MovementStateChangeUpdate()) { return; }
-        if (Input.IsActionPressed("move_left") || Input.IsActionPressed("move_right")) {
+        if (Mario.MoveDirection != 0 && (Input.IsActionPressed("move_left") || Input.IsActionPressed("move_right"))) {
             if (Input.IsActionPressed("run")) {
                 Mario.MovementState = new MarioRunState(Mario);
             } else {

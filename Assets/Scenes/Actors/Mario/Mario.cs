@@ -48,6 +48,8 @@ public class Mario : Node2D, IActor {
     [Export] public float AirRunAcceleration { get; set; } = 10f;
     [Export(PropertyHint.Range, "0,1")] public float AirRunDampening { get; set; } = 0.5f;
 
+    [Export] public float JumpVelocity { get; set; } = 10f;
+
     // Private variables
 
     /// <Summary> The horizontal movement state machine </Summary>
@@ -62,12 +64,9 @@ public class Mario : Node2D, IActor {
     }
 
     public override void _Process(float currentDelta) {
-        if (Input.IsActionPressed("move_right") || Input.IsActionPressed("move_left")) {
-            FacingDirection = Input.IsActionPressed("move_right") ? 1 : -1;
-            MoveDirection = FacingDirection;
-        } else {
-            MoveDirection = 0;
-        }
+        MoveDirection = 0;
+        MoveDirection += Input.IsActionPressed("move_right") ? 1 : 0;
+        MoveDirection += Input.IsActionPressed("move_left") ? -1 : 0;
 
         delta = currentDelta;
         movementStateMachine.Update();
@@ -76,8 +75,19 @@ public class Mario : Node2D, IActor {
         Position += Velocity * delta;
     }
 
+    /// <Summary> Handles facing direction logic </Summary>
+    public void FacingDirectionUpdate() {
+        if (MoveDirection != 0) {
+            FacingDirection = MoveDirection;
+        }
+    }
+
     /// <Summary> Handles basic movement state change logic, returns true if the state was changed </Summary>
     public bool MovementStateChangeUpdate() {
+        if (Input.IsActionJustPressed("jump")) {
+            MovementState = new MarioJumpState(this);
+        }
+
         return false;
     }
 
@@ -87,5 +97,18 @@ public class Mario : Node2D, IActor {
         horizontalVelocity += MoveDirection * acceleration;
         horizontalVelocity *= Mathf.Pow(1f - dampening, delta * SpeedFactor);
         Velocity = new Vector2(horizontalVelocity, Velocity.y);
+    }
+
+    /// <Summary> Handles basic air horizontal movement logic </Summary>
+    public void AirHorizontalMovementUpdate() {
+        if (MoveDirection != 0) {
+            if (Input.IsActionPressed("run")) {
+                HorizontalMovementUpdate(AirRunAcceleration, AirRunDampening);
+            } else {
+                HorizontalMovementUpdate(AirWalkAcceleration, AirWalkDampening);
+            }
+        } else {
+            HorizontalMovementUpdate(0, AirIdleDampening);
+        }
     }
 }
